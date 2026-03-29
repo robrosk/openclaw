@@ -1,0 +1,71 @@
+{
+  agents: {
+    list: [
+      {
+        id: "orchestrator",
+        workspace: "~/.openclaw/workspace-orchestrator",
+      },
+      {
+        id: "scout",
+        workspace: "~/.openclaw/workspace-scout",
+      },
+      {
+        id: "analyst",
+        workspace: "~/.openclaw/workspace-analyst",
+      },
+      {
+        id: "quant",
+        workspace: "~/.openclaw/workspace-quant",
+      },
+      {
+        id: "devils-advocate",
+        workspace: "~/.openclaw/workspace-devils-advocate",
+      },
+    ],
+  },
+
+  channels: {
+    slack: {
+      accounts: {
+        orchestrator: {
+          token: "xoxb-orchestrator-token",
+        },
+        scout: {
+          token: "xoxb-scout-token",
+        },
+        analyst: {
+          token: "xoxb-analyst-token",
+        },
+        quant: {
+          token: "xoxb-quant-token",
+        },
+        "devils-advocate": {
+          token: "xoxb-devils-advocate-token",
+        },
+      },
+    },
+  },
+
+  bindings: [
+    {
+      agentId: "orchestrator",
+      match: { channel: "slack", accountId: "orchestrator" },
+    },
+    {
+      agentId: "scout",
+      match: { channel: "slack", accountId: "scout" },
+    },
+    {
+      agentId: "analyst",
+      match: { channel: "slack", accountId: "analyst" },
+    },
+    {
+      agentId: "quant",
+      match: { channel: "slack", accountId: "quant" },
+    },
+    {
+      agentId: "devils-advocate",
+      match: { channel: "slack", accountId: "devils-advocate" },
+    },
+  ],
+}
