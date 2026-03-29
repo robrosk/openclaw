@@ -29,8 +29,8 @@ agent-team/
   shared-skills/                 # Skills shared across all agents
   shared-state/portfolio/        # Shared portfolio context (watchlist, positions, etc.)
   config/
-    openclaw.json                # Production config (5 agents, env var references)
-    .env                         # Environment variable template (REPLACE_ME placeholders)
+    openclaw.json                # Production config (env var references for secrets + channel IDs)
+    .env                         # Environment variable template (gitignored)
     slack-app-manifest.example.json
     slack-rollout-checklist.md
     openclaw.multi-agent.example.json5
@@ -42,7 +42,7 @@ scripts/
 
 ### Config approach
 
-All secrets (Slack tokens, gateway token) are referenced in `openclaw.json` via `${ENV_VAR}` interpolation and stored in a `.env` file that never contains real values in the repo. The actual `.env` with real tokens lives only on the VM at `~/.openclaw/.env`.
+All secrets and Slack channel IDs are referenced in `openclaw.json` via `${ENV_VAR}` interpolation. Nothing sensitive is hardcoded in the config. The `.env` file holds the actual values and is gitignored -- real tokens live only on the VM at `~/.openclaw/.env`.
 
 ## Prerequisites
 
@@ -66,10 +66,13 @@ git clone <your-fork-url>
 cd openclaw
 ```
 
-Edit `agent-team/config/.env` and replace all `REPLACE_ME` values with your real tokens:
+Edit `agent-team/config/.env` and fill in all values:
 
 ```
-OPENCLAW_GATEWAY_TOKEN=<openssl rand -hex 24>
+# Gateway token (generate with: openssl rand -hex 24)
+OPENCLAW_GATEWAY_TOKEN=<your-token>
+
+# Slack bot + app tokens (one pair per agent)
 SLACK_ORCHESTRATOR_BOT_TOKEN=xoxb-...
 SLACK_ORCHESTRATOR_APP_TOKEN=xapp-...
 SLACK_SCOUT_BOT_TOKEN=xoxb-...
@@ -80,9 +83,19 @@ SLACK_QUANT_BOT_TOKEN=xoxb-...
 SLACK_QUANT_APP_TOKEN=xapp-...
 SLACK_DEVILS_ADVOCATE_BOT_TOKEN=xoxb-...
 SLACK_DEVILS_ADVOCATE_APP_TOKEN=xapp-...
+
+# Slack channel IDs
+# Right-click channel in Slack -> View channel details -> ID at bottom
+SLACK_CHANNEL_MARKET_SIGNALS=C0ABC...
+SLACK_CHANNEL_RESEARCH=C0DEF...
+SLACK_CHANNEL_QUANT_SIGNALS=C0GHI...
+SLACK_CHANNEL_CONTRARIAN=C0JKL...
+SLACK_CHANNEL_DISPATCH=C0MNO...
+SLACK_CHANNEL_PORTFOLIO_DAILY=C0PQR...
+SLACK_CHANNEL_PORTFOLIO_WEEKLY=C0STU...
 ```
 
-Replace the placeholder channel IDs (`C_MARKET_SIGNALS`, etc.) in `agent-team/config/openclaw.json` with your real Slack channel IDs.
+The `openclaw.json` config references all of these via `${VAR_NAME}` -- you never need to edit the JSON directly.
 
 ### 2. Deploy to the VM
 
@@ -123,7 +136,7 @@ In Slack, invite each bot to its channels:
 
 ### 5. Test
 
-DM the Orchestrator in Slack - it will respond with a pairing code. The other 4 agents have DMs disabled by default; interact with them by @mentioning them in their channels.
+DM the Orchestrator in Slack -- it will respond with a pairing code. The other 4 agents have DMs disabled by default; interact with them by @mentioning them in their channels.
 
 ## Updating
 
@@ -144,3 +157,5 @@ The script always overwrites `openclaw.json` and workspace files but preserves y
 - **Orchestrator is the only dispatcher.** Specialists never assign work to each other directly.
 - **Channel-visible handoffs.** All task assignments go through `#dispatch` so nothing is hidden.
 - **Shared portfolio state.** Every agent reads the same `watchlist.md`, `positions.md`, and `recent-decisions.md` from their `shared/portfolio/` directory. Only the Orchestrator updates these files.
+- **DM policy.** Only the Orchestrator accepts DMs (`dmPolicy: "pairing"`). Specialists have DMs disabled. Change per-agent `dmPolicy` in `openclaw.json` under `channels.slack.accounts` if needed.
+- **Mention-gated channels.** All channels use `requireMention: true` -- agents only respond when @mentioned. This prevents noise from cross-channel chatter.
