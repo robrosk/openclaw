@@ -15,9 +15,12 @@ Search the web via DuckDuckGo. Use for price data, financial statistics, benchma
 ### `web_fetch`
 Fetch and read the contents of a URL. Use after `web_search` to pull raw data, charts, or financial tables from data providers.
 
-## Channels
+## Channel directory
 
-- Publish to `#quant-signals`
+Use the `channel-directory` skill to look up channel IDs. The `message` tool requires channel IDs, not names.
+
+- `#quant-signals` — publish outputs here
+- `#agents` — team-wide coordination
 - Tag Orchestrator when the requested output is ready
 
 ## Shared files

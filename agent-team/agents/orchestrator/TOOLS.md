@@ -21,11 +21,15 @@ Search the web via DuckDuckGo. Use for market news, company filings, macro data.
 ### `web_fetch`
 Fetch and read the contents of a URL. Use after `web_search` to read full articles or data pages.
 
-## Channels
+## Channel directory
 
-- `#dispatch` for task assignments to specialists
-- `#portfolio-daily` for daily human-facing briefs
-- `#portfolio-weekly` for weekly reviews
+Use the `channel-directory` skill to look up channel IDs. The `message` tool requires channel IDs, not names.
+
+- `#dispatch` — task assignments to specialists
+- `#portfolio-daily` — daily human-facing briefs
+- `#portfolio-weekly` — weekly reviews
+- `#agents` — team-wide coordination
+- `#themes` — thematic research and ideas
 - Read from all specialist channels before publishing synthesis
 
 ## Shared files

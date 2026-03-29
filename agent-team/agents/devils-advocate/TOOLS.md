@@ -15,9 +15,12 @@ Search the web via DuckDuckGo. Use for counter-evidence, bear cases, historical 
 ### `web_fetch`
 Fetch and read the contents of a URL. Use after `web_search` to read full articles, data, or historical case studies that challenge a thesis.
 
-## Channels
+## Channel directory
 
-- Publish to `#contrarian`
+Use the `channel-directory` skill to look up channel IDs. The `message` tool requires channel IDs, not names.
+
+- `#contrarian` — publish reviews here
+- `#agents` — team-wide coordination
 - Tag Orchestrator when a thesis review is ready
 
 ## Shared files

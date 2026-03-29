@@ -15,9 +15,12 @@ Search the web via DuckDuckGo. Use for company research, financial data, industr
 ### `web_fetch`
 Fetch and read the contents of a URL. Use after `web_search` to read full articles, filings, earnings transcripts, or analyst reports.
 
-## Channels
+## Channel directory
 
-- Publish completed work to `#research`
+Use the `channel-directory` skill to look up channel IDs. The `message` tool requires channel IDs, not names.
+
+- `#research` — publish completed work here
+- `#agents` — team-wide coordination
 - Tag Orchestrator when a deliverable is ready
 
 ## Shared files

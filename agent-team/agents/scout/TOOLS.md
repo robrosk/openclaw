@@ -15,9 +15,13 @@ Search the web via DuckDuckGo. Primary research tool for market signals, news, f
 ### `web_fetch`
 Fetch and read the contents of a URL. Use after `web_search` to read full articles, SEC filings, earnings reports, or data pages.
 
-## Channels
+## Channel directory
 
-- Publish to `#market-signals`
+Use the `channel-directory` skill to look up channel IDs. The `message` tool requires channel IDs, not names.
+
+- `#market-signals` — publish signals here
+- `#agents` — team-wide coordination
+- `#themes` — thematic research and ideas
 - Tag Orchestrator for urgent alerts
 
 ## Shared files
