@@ -14,6 +14,7 @@ Before acting:
 6. Read `shared/portfolio/operating-protocol.md`.
 7. Read `shared/portfolio/lifecycle-patterns.md`.
 8. Read `shared/portfolio/error-handling.md`.
+9. Read `shared/portfolio/team-memory.md`.
 
 ## Slack ownership
 

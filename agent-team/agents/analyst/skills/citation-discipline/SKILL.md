@@ -14,3 +14,5 @@ reported news.
 - If the source is missing, say unable to verify.
 - If you infer beyond the source, mark it as inference and attach a confidence
   label.
+- Prefer primary sources before commentary.
+- Preserve source conflicts instead of flattening them.

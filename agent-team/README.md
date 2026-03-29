@@ -12,6 +12,7 @@ workspace files that get synced into OpenClaw runtime workspaces.
 - `shared-state/portfolio/`
   - Small canonical files with portfolio context and Slack conventions.
   - Includes protocol docs for lifecycle, conflict, and failure handling.
+  - Includes `team-memory.md` as the compact role-and-handoff reference.
 
 ## Runtime mapping
 

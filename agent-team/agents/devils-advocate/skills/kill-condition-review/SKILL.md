@@ -12,3 +12,4 @@ Use this skill when a thesis needs explicit invalidation criteria.
 - Define observable conditions, not vague worries.
 - Prefer measurable and time-bound triggers.
 - State what action the team should take when a kill condition is hit.
+- Tie each kill condition to the thesis assumption it invalidates.

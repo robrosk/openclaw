@@ -25,3 +25,4 @@ Use this skill when executing the recurring scan routine.
 
 - Report only noteworthy items.
 - If a feed is unavailable, say so instead of filling gaps with guesses.
+- Route findings to `#market-signals`; do not dispatch follow-up work yourself.
