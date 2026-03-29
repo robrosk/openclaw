@@ -87,11 +87,20 @@ function Get-AgentWorkspacePath {
   Join-Path $Root ("workspace-" + $Agent)
 }
 
+function Get-OpenClawConfigPath {
+  param([string]$Root)
+
+  Join-Path $Root "openclaw.json"
+}
+
 $repoRoot = Get-RepoRoot
 $teamRoot = Join-Path $repoRoot "agent-team"
 $agentsRoot = Join-Path $teamRoot "agents"
 $sharedSkillsRoot = Join-Path $teamRoot "shared-skills"
 $sharedStateRoot = Join-Path $teamRoot "shared-state"
+$openClawConfigPath = Get-OpenClawConfigPath -Root $OpenClawRoot
+$openClawCommand = Get-Command "openclaw" -ErrorAction SilentlyContinue
+$canApplyIdentity = ($null -ne $openClawCommand) -and (Test-Path -LiteralPath $openClawConfigPath)
 
 if (-not (Test-Path -LiteralPath $agentsRoot)) {
   throw "Missing agent-team/agents directory at $agentsRoot"
@@ -129,6 +138,19 @@ foreach ($targetAgent in $targetAgents) {
     $destShared = Join-Path $destWorkspace "shared"
     Sync-DirectoryContent -Source $sharedStateRoot -Destination $destShared -Mirror:$Prune -WhatIf:$WhatIfPreference
   }
+
+  if ($canApplyIdentity) {
+    if ($WhatIfPreference) {
+      Write-Host "What if: Would apply agent identity for $targetAgent from $destWorkspace into $openClawConfigPath."
+    } else {
+      try {
+        & $openClawCommand.Source "agents" "set-identity" "--agent" $targetAgent "--workspace" $destWorkspace "--from-identity" | Out-Null
+        Write-Host "Applied identity from IDENTITY.md for $targetAgent."
+      } catch {
+        Write-Warning ("Failed to apply identity for {0} from {1}: {2}" -f $targetAgent, $destWorkspace, $_.Exception.Message)
+      }
+    }
+  }
 }
 
 if ($IncludeSharedSkills) {
@@ -142,4 +164,7 @@ if ($IncludeSharedState) {
 }
 if ($IncludeSharedSkills) {
   Write-Host "Included shared skills."
+}
+if (-not $canApplyIdentity) {
+  Write-Host "Skipped live identity update because openclaw CLI or $openClawConfigPath was not found."
 }

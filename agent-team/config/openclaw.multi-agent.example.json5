@@ -3,44 +3,151 @@
     list: [
       {
         id: "orchestrator",
+        default: true,
+        name: "Orchestrator - Portfolio Manager",
         workspace: "~/.openclaw/workspace-orchestrator",
+        identity: {
+          name: "Orchestrator - Portfolio Manager",
+          emoji: "⚡",
+        },
       },
       {
         id: "scout",
+        name: "Scout - Market Intelligence",
         workspace: "~/.openclaw/workspace-scout",
+        identity: {
+          name: "Scout - Market Intelligence",
+        },
       },
       {
         id: "analyst",
+        name: "Analyst - Fundamental Research",
         workspace: "~/.openclaw/workspace-analyst",
+        identity: {
+          name: "Analyst - Fundamental Research",
+        },
       },
       {
         id: "quant",
+        name: "Quant - Technical & Quantitative",
         workspace: "~/.openclaw/workspace-quant",
+        identity: {
+          name: "Quant - Technical & Quantitative",
+        },
       },
       {
         id: "devils-advocate",
+        name: "Devil's Advocate - Risk & Contrarian",
         workspace: "~/.openclaw/workspace-devils-advocate",
+        identity: {
+          name: "Devil's Advocate - Risk & Contrarian",
+        },
       },
     ],
   },
 
+  // Keep hidden agent-to-agent messaging off. This team coordinates in Slack.
+  tools: {
+    agentToAgent: {
+      enabled: false,
+    },
+  },
+
   channels: {
     slack: {
+      enabled: true,
+      mode: "socket",
+
+      // Make the default account explicit for CLI probes and fallback routing.
+      defaultAccount: "orchestrator",
+
+      // Conservative defaults. Specialists do not accept DMs by default.
+      dmPolicy: "disabled",
+      groupPolicy: "allowlist",
+
+      // Keep channel matching ID-first. Do not enable name matching unless needed.
+      dangerouslyAllowNameMatching: false,
+
+      // Shared allowlist for the seven team channels.
+      // Replace these placeholder IDs with your real Slack channel IDs.
+      channels: {
+        "C_MARKET_SIGNALS": {
+          allow: true,
+          requireMention: true,
+          allowBots: true,
+        },
+        "C_RESEARCH": {
+          allow: true,
+          requireMention: true,
+          allowBots: true,
+        },
+        "C_QUANT_SIGNALS": {
+          allow: true,
+          requireMention: true,
+          allowBots: true,
+        },
+        "C_CONTRARIAN": {
+          allow: true,
+          requireMention: true,
+          allowBots: true,
+        },
+        "C_DISPATCH": {
+          allow: true,
+          requireMention: true,
+          allowBots: true,
+        },
+        "C_PORTFOLIO_DAILY": {
+          allow: true,
+          requireMention: true,
+          allowBots: false,
+        },
+        "C_PORTFOLIO_WEEKLY": {
+          allow: true,
+          requireMention: true,
+          allowBots: false,
+        },
+      },
+
       accounts: {
         orchestrator: {
-          token: "xoxb-orchestrator-token",
+          name: "Orchestrator - Portfolio Manager",
+          botToken: "xoxb-orchestrator-token",
+          appToken: "xapp-orchestrator-token",
+
+          // Orchestrator is the only bot that should accept DMs from you.
+          dmPolicy: "pairing",
+
+          // Optional if you want a fixed owner allowlist instead of pairing:
+          // dmPolicy: "allowlist",
+          // allowFrom: ["U0123456789"],
         },
+
         scout: {
-          token: "xoxb-scout-token",
+          name: "Scout - Market Intelligence",
+          botToken: "xoxb-scout-token",
+          appToken: "xapp-scout-token",
+          dmPolicy: "disabled",
         },
+
         analyst: {
-          token: "xoxb-analyst-token",
+          name: "Analyst - Fundamental Research",
+          botToken: "xoxb-analyst-token",
+          appToken: "xapp-analyst-token",
+          dmPolicy: "disabled",
         },
+
         quant: {
-          token: "xoxb-quant-token",
+          name: "Quant - Technical & Quantitative",
+          botToken: "xoxb-quant-token",
+          appToken: "xapp-quant-token",
+          dmPolicy: "disabled",
         },
+
         "devils-advocate": {
-          token: "xoxb-devils-advocate-token",
+          name: "Devil's Advocate - Risk & Contrarian",
+          botToken: "xoxb-devils-advocate-token",
+          appToken: "xapp-devils-advocate-token",
+          dmPolicy: "disabled",
         },
       },
     },

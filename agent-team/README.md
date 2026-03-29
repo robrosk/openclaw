@@ -28,6 +28,10 @@ The sync script deploys these folders into `~/.openclaw` by default:
 The script also copies `shared-state/portfolio/` into each workspace under
 `shared/portfolio/` so every agent can read the same durable context.
 
+When `~/.openclaw/openclaw.json` already exists and the `openclaw` CLI is
+available, the sync script also applies each workspace `IDENTITY.md` into the
+live agent config so outbound identity names stay aligned with the workspace.
+
 ## Notes
 
 - `SOUL.md` carries the primary persona and boundaries.
@@ -56,3 +60,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/sync-agent-workspace
 
 See `agent-team/config/openclaw.multi-agent.example.json5` for a starting
 OpenClaw config skeleton that matches this workspace layout.
+
+For the Slack-specific rollout:
+
+- `agent-team/config/slack-app-manifest.example.json`
+  - Generic Socket Mode manifest template for each bot.
+- `agent-team/config/slack-rollout-checklist.md`
+  - Exact five-bot, seven-channel rollout steps for this investment team.
