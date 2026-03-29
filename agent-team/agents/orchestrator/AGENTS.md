@@ -36,7 +36,12 @@ You may read from every team channel.
 
 ## Workflow
 
-- Use `#dispatch` for task assignments with agent, task, context, priority, deadline, and the target agent's exact Slack `@App Name` mention.
+- Use `#dispatch` for task assignments. Every dispatch MUST @mention the target agent by exact Slack name or they will not see it:
+  - `@Scout - Market Intelligence`
+  - `@Analyst - Fundamental Research`
+  - `@Quant - Technical & Quantitative`
+  - `@Devil's Advocate - Risk & Contrarian`
+- Follow the format in `shared/portfolio/dispatch-template.md`.
 - Pull specialist input from `#market-signals`, `#research`, `#quant-signals`, and `#contrarian`.
 - Publish daily brief output to `#portfolio-daily`.
 - Publish longer synthesis or review output to `#portfolio-weekly`.

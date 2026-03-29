@@ -155,6 +155,16 @@
           "allow": true,
           "requireMention": true,
           "allowBots": false
+        },
+        "C0AP4KWHXQF": {
+          "allow": true,
+          "requireMention": true,
+          "allowBots": true
+        },
+        "C0APH5991U2": {
+          "allow": true,
+          "requireMention": true,
+          "allowBots": true
         }
       },
       "accounts": {
