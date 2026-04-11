@@ -103,7 +103,6 @@
       "enabled": true,
       "mode": "socket",
       "defaultAccount": "orchestrator",
-      "dmPolicy": "disabled",
       "groupPolicy": "allowlist",
       "dangerouslyAllowNameMatching": false,
       "webhookPath": "/slack/events",
@@ -117,8 +116,10 @@
         "memberInfo": true,
         "emojiList": true
       },
-      "streaming": "partial",
-      "nativeStreaming": true,
+      "streaming": {
+        "mode": "partial",
+        "nativeTransport": true
+      },
       "userTokenReadOnly": true,
       "channels": {
         "${SLACK_CHANNEL_MARKET_SIGNALS}": {

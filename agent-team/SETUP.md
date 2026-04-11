@@ -196,6 +196,8 @@ git pull
 
 `--clean` never touches `~/.openclaw/.env`. It does rewrite `~/.openclaw/openclaw.json` from the source config each run.
 
+The gateway is always relaunched from `$HOME` with `OPENCLAW_BUNDLED_PLUGINS_DIR`, `OPENCLAW_STATE_DIR`, and `OPENCLAW_CONFIG_PATH` stripped from the environment. This is intentional: OpenClaw's bundled-plugins resolver walks `process.cwd()` looking for an OpenClaw package root, and if the gateway boots with cwd inside a clone of the openclaw source repo (e.g. `/home/clawadmin/openclaw/`), the resolver mistakes that clone for the package root and points the bundled-plugins tree at `<repo>/extensions/` instead of the globally-installed npm package's `dist/extensions`. That mismatch surfaces on every boot as `plugin manifest not found: <repo>/extensions/openclaw.plugin.json`. Launching from `$HOME` (which is not a checkout) avoids the trap. You can run the sync script itself from anywhere — only the gateway subprocess needs the safe cwd.
+
 ## Architecture notes
 
 - **A2A is enabled for artifact pull only.** `agentToAgent.enabled: true`, but the hard team rule is: A2A is ONLY for pulling finished artifacts from another agent's `files/` folder after a Slack pointer has been posted. Tasking, discussion, and coordination stay in Slack. See `shared-skills/a2a-artifact-pull/SKILL.md`.

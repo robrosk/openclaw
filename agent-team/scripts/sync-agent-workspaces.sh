@@ -116,9 +116,23 @@ cp -r "$SHARED_SKILLS_ROOT"/* "$OPENCLAW_ROOT/skills/"
 echo "Synced shared skills."
 
 # --- Restart gateway ---
+# IMPORTANT: launch the gateway from $HOME, not from this script's cwd.
+# resolveBundledPluginsDir() walks process.cwd() looking for an OpenClaw
+# package root. If the operator runs this script from inside a clone of the
+# openclaw source repo (e.g. /home/clawadmin/openclaw/), cwd will look like
+# a "source checkout" (.git + src + extensions all present), and the gateway
+# will resolve its bundled plugins dir to <repo>/extensions instead of the
+# globally-installed npm package's dist tree. That mismatch surfaces as
+# "plugin manifest not found: <repo>/extensions/openclaw.plugin.json" on
+# every boot. Launching from $HOME (which is not a checkout) and stripping
+# any stale OPENCLAW_* env overrides keeps the resolver pointed at the
+# globally-installed openclaw package.
 pkill -9 -f openclaw-gateway || true
 sleep 1
-nohup openclaw gateway run --bind loopback --port 18789 --force > /tmp/openclaw-gateway.log 2>&1 &
-echo "Gateway restarted. Logs at /tmp/openclaw-gateway.log"
+( cd "$HOME" && \
+  env -u OPENCLAW_BUNDLED_PLUGINS_DIR -u OPENCLAW_STATE_DIR -u OPENCLAW_CONFIG_PATH \
+    nohup openclaw gateway run --bind loopback --port 18789 --force \
+    > /tmp/openclaw-gateway.log 2>&1 & )
+echo "Gateway restarted from \$HOME. Logs at /tmp/openclaw-gateway.log"
 echo ""
 echo "Verify with: openclaw channels status --probe"
