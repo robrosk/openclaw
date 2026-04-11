@@ -89,6 +89,11 @@ docs/internal/
 tmp/
 IDENTITY.md
 USER.md
+# Exception: agent-team templates must ship in the repo so the sync script
+# can deploy them into each runtime workspace. Operators personalize the
+# runtime copies under ~/.openclaw/workspace-<id>/, not the repo templates.
+!agent-team/agents/*/IDENTITY.md
+!agent-team/agents/*/USER.md
 .tgz
 .idea
 
