@@ -7,6 +7,7 @@
 # Usage:
 #   ./sync-agent-workspaces.sh             # sync (additive, legacy behavior)
 #   ./sync-agent-workspaces.sh --clean     # wipe workspace-*/skills/ first, then sync
+#   ./sync-agent-workspaces.sh --no-build  # skip pnpm install + pnpm build (use only if dist/ is already current)
 #   ./sync-agent-workspaces.sh --help
 #
 # Safe-by-default: never touches ~/.openclaw/.env or ~/.openclaw/openclaw.json
@@ -18,13 +19,17 @@
 set -euo pipefail
 
 CLEAN=0
+BUILD=1
 for arg in "$@"; do
   case "$arg" in
     --clean)
       CLEAN=1
       ;;
+    --no-build)
+      BUILD=0
+      ;;
     --help|-h)
-      sed -n '3,16p' "$0"
+      sed -n '3,17p' "$0"
       exit 0
       ;;
     *)
@@ -63,6 +68,7 @@ echo "Repo root:   $REPO_ROOT"
 echo "Team root:   $TEAM_ROOT"
 echo "Target root: $OPENCLAW_ROOT"
 echo "Clean mode:  $CLEAN"
+echo "Build mode:  $BUILD"
 echo "OpenClaw:    $OPENCLAW_BIN"
 echo ""
 
@@ -73,6 +79,31 @@ if [ -d "$REPO_ROOT/.git" ] && [ -d "$REPO_ROOT/src" ] && [ -d "$REPO_ROOT/exten
   echo "Source checkout detected at: $REPO_ROOT"
   echo "Gateway will be launched from \$HOME with bundled-plugin env vars stripped."
   echo ""
+fi
+
+# --- Rebuild dist/ so compiled core matches src/ + extensions/ ---
+# On VMs where the installed `openclaw` CLI is a pnpm-global link into this
+# source checkout, every `git pull` invalidates dist/. If dist/ is not
+# rebuilt, the CLI loads stale compiled core against jiti-loaded `.ts`
+# extensions and every provider plugin throws TypeError on registration
+# (e.g. "_providerModelShared.buildProviderReplayFamilyHooks is not a
+# function", "api.registerVideoGenerationProvider is not a function"). The
+# resulting plugin-discovery cascade also surfaces as the misleading
+# "plugin manifest not found: <repo>/extensions/openclaw.plugin.json".
+# Rebuilding before relaunching the gateway is the durable fix.
+# Pass --no-build to skip this if you have already rebuilt manually.
+if [ "$BUILD" -eq 1 ] && [ -d "$REPO_ROOT/.git" ] && [ -d "$REPO_ROOT/src" ]; then
+  if command -v pnpm >/dev/null 2>&1; then
+    echo "Rebuilding OpenClaw from source ($REPO_ROOT) ..."
+    ( cd "$REPO_ROOT" && pnpm install --frozen-lockfile && pnpm build )
+    echo "Rebuild complete."
+    echo ""
+  else
+    echo "WARNING: pnpm not found on PATH; skipping rebuild." >&2
+    echo "  dist/ may drift from src/ and provider plugins may fail to load." >&2
+    echo "  Install pnpm or rerun with --no-build to silence this warning." >&2
+    echo "" >&2
+  fi
 fi
 
 mkdir -p "$OPENCLAW_ROOT"

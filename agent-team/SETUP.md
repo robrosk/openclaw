@@ -190,11 +190,14 @@ The scheduled job set fires Scout's morning watchlist, pre-market / mid-day / po
 ```bash
 # On the VM
 git pull
-./agent-team/scripts/sync-agent-workspaces.sh             # additive
-./agent-team/scripts/sync-agent-workspaces.sh --clean     # full clean resync
+./agent-team/scripts/sync-agent-workspaces.sh             # rebuild dist + additive sync
+./agent-team/scripts/sync-agent-workspaces.sh --clean     # rebuild dist + full clean resync
+./agent-team/scripts/sync-agent-workspaces.sh --no-build  # skip rebuild (only if dist/ is already current)
 ```
 
 `--clean` never touches `~/.openclaw/.env`. It does rewrite `~/.openclaw/openclaw.json` from the source config each run.
+
+The sync script runs `pnpm install --frozen-lockfile && pnpm build` in the repo root by default. This is required on this VM because the installed `openclaw` CLI is a pnpm-global link into the source checkout, so every `git pull` invalidates `dist/`. If `dist/` is not rebuilt, the CLI loads stale compiled core against jiti-loaded `.ts` extensions and **every** provider plugin throws `TypeError` on registration — typical symptoms include `_providerModelShared.buildProviderReplayFamilyHooks is not a function`, `api.registerVideoGenerationProvider is not a function`, and the misleading cascade error `plugin manifest not found: <repo>/extensions/openclaw.plugin.json`. If you see those, the fix is to rerun the sync script (which rebuilds) or manually `cd ~/openclaw && pnpm install && pnpm build`. Pass `--no-build` only when you have already rebuilt `dist/` by hand and know it matches the current `src/` and `extensions/` trees.
 
 The gateway is always relaunched from `$HOME` with `OPENCLAW_BUNDLED_PLUGINS_DIR`, `OPENCLAW_PLUGINS`, `OPENCLAW_STATE_DIR`, and `OPENCLAW_CONFIG_PATH` stripped from the environment. This is intentional: OpenClaw's bundled-plugins resolver walks `process.cwd()` looking for an OpenClaw package root, and if the gateway boots with cwd inside a clone of the openclaw source repo (e.g. `/home/clawadmin/openclaw/`), the resolver mistakes that clone for the package root and points the bundled-plugins tree at `<repo>/extensions/` instead of the globally-installed npm package's `dist/extensions`. That mismatch surfaces on every boot as `plugin manifest not found: <repo>/extensions/openclaw.plugin.json`. Launching from `$HOME` (which is not a checkout) avoids the trap. You can run the sync script itself from anywhere — only the gateway subprocess needs the safe cwd.
 

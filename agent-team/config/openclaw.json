@@ -17,7 +17,11 @@
         "openai-codex/gpt-5.4": {},
         "openai-codex/gpt-5.4-mini": {}
       },
-      "workspace": "/home/clawadmin/.openclaw/workspace-orchestrator"
+      "workspace": "/home/clawadmin/.openclaw/workspace-orchestrator",
+      "memorySearch": {
+        "enabled": true,
+        "provider": "openai"
+      }
     },
     "list": [
       {
@@ -103,7 +107,7 @@
       "enabled": true,
       "mode": "socket",
       "defaultAccount": "orchestrator",
-      "groupPolicy": "allowlist",
+      "groupPolicy": "open",
       "dangerouslyAllowNameMatching": false,
       "webhookPath": "/slack/events",
       "capabilities": {

@@ -3,6 +3,7 @@ param(
   [string]$AgentId,
   [switch]$All,
   [switch]$Clean,
+  [switch]$NoBuild,
   [switch]$IncludeSharedSkills,
   [switch]$IncludeSharedState,
   [switch]$IncludeConfig,
@@ -151,6 +152,34 @@ if ((Test-Path -LiteralPath (Join-Path $repoRoot ".git")) -and
   Write-Host "Source checkout detected at: $repoRoot"
   Write-Host "Run any 'openclaw channels status --probe' from `$HOME with bundled-plugin env vars stripped."
   Write-Host ""
+}
+
+# --- Rebuild dist/ so compiled core matches src/ + extensions/ ---
+# On hosts where the installed `openclaw` CLI is a pnpm-global link into this
+# source checkout, every `git pull` invalidates dist/. If dist/ is not
+# rebuilt, the CLI loads stale compiled core against jiti-loaded `.ts`
+# extensions and provider plugins throw TypeError on registration. Pass
+# -NoBuild to skip if you have already rebuilt manually.
+if (-not $NoBuild -and
+    (Test-Path -LiteralPath (Join-Path $repoRoot ".git")) -and
+    (Test-Path -LiteralPath (Join-Path $repoRoot "src"))) {
+  $pnpmCommand = Get-Command "pnpm" -ErrorAction SilentlyContinue
+  if ($null -ne $pnpmCommand) {
+    Write-Host "Rebuilding OpenClaw from source ($repoRoot) ..."
+    Push-Location $repoRoot
+    try {
+      & $pnpmCommand.Source "install" "--frozen-lockfile"
+      if ($LASTEXITCODE -ne 0) { throw "pnpm install failed (exit $LASTEXITCODE)" }
+      & $pnpmCommand.Source "build"
+      if ($LASTEXITCODE -ne 0) { throw "pnpm build failed (exit $LASTEXITCODE)" }
+    } finally {
+      Pop-Location
+    }
+    Write-Host "Rebuild complete."
+    Write-Host ""
+  } else {
+    Write-Warning "pnpm not found on PATH; skipping rebuild. dist/ may drift from src/. Install pnpm or rerun with -NoBuild to silence this warning."
+  }
 }
 
 $agentsRoot = Join-Path $teamRoot "agents"
