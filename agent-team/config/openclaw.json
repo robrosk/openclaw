@@ -120,7 +120,6 @@
         "mode": "partial",
         "nativeTransport": true
       },
-      "nativeStreaming": true,
       "userTokenReadOnly": true,
       "channels": {
         "${SLACK_CHANNEL_MARKET_SIGNALS}": {
