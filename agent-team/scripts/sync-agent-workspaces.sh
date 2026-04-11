@@ -44,10 +44,26 @@ SHARED_SKILLS_ROOT="$TEAM_ROOT/shared-skills"
 SHARED_STATE_ROOT="$TEAM_ROOT/shared-state"
 OPENCLAW_ROOT="${OPENCLAW_ROOT:-$HOME/.openclaw}"
 
+# Resolve the absolute path to `openclaw` up front so the gateway relaunch at
+# the bottom of this script does not depend on PATH being inherited into
+# `nohup` / `env -u` subshells. Non-interactive shells and sandbox runners
+# (e.g. the snap codex sandbox) often strip npm/pnpm global bin from PATH, and
+# "nohup: failed to run command 'openclaw': No such file or directory" is the
+# usual symptom. Fail loudly here instead of silently losing the gateway.
+OPENCLAW_BIN="$(command -v openclaw || true)"
+if [ -z "$OPENCLAW_BIN" ]; then
+  echo "ERROR: 'openclaw' is not on PATH for this shell." >&2
+  echo "  PATH=$PATH" >&2
+  echo "  Run this script from an interactive login shell where 'which openclaw' succeeds," >&2
+  echo "  or set OPENCLAW_BIN=/absolute/path/to/openclaw before invoking." >&2
+  exit 1
+fi
+
 echo "Repo root:   $REPO_ROOT"
 echo "Team root:   $TEAM_ROOT"
 echo "Target root: $OPENCLAW_ROOT"
 echo "Clean mode:  $CLEAN"
+echo "OpenClaw:    $OPENCLAW_BIN"
 echo ""
 
 # Source-checkout preflight: warn the operator that the gateway and any
@@ -144,7 +160,7 @@ sleep 1
       -u OPENCLAW_PLUGINS \
       -u OPENCLAW_STATE_DIR \
       -u OPENCLAW_CONFIG_PATH \
-    nohup openclaw gateway run --bind loopback --port 18789 --force \
+    nohup "$OPENCLAW_BIN" gateway run --bind loopback --port 18789 --force \
     > /tmp/openclaw-gateway.log 2>&1 & )
 echo "Gateway restarted from \$HOME. Logs at /tmp/openclaw-gateway.log"
 echo ""
