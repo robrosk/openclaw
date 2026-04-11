@@ -1,10 +1,10 @@
 {
   "auth": {
     "profiles": {
-      "openai-codex:rob.roskowski@gmail.com": {
+      "openai-codex:${OPERATOR_EMAIL}": {
         "provider": "openai-codex",
         "mode": "oauth",
-        "email": "rob.roskowski@gmail.com"
+        "email": "${OPERATOR_EMAIL}"
       }
     }
   },
