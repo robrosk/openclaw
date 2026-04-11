@@ -6,7 +6,7 @@ These flows define how work begins and how it reaches a human decision.
 
 1. Scout detects a signal and posts it to `#market-signals`.
 2. Orchestrator triages the signal.
-3. Orchestrator dispatches work in `#dispatch`.
+3. Orchestrator dispatches work in `#task-board`.
 4. Analyst and Quant execute in parallel when relevant.
 5. Devil's Advocate stress-tests the thesis.
 6. Orchestrator publishes the decision brief.

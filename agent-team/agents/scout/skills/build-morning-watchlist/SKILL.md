@@ -10,7 +10,7 @@ The day's ranked coverage list. Scout rebuilds it each pre-market; Orchestrator 
 ## Trigger
 
 - Scheduled job: `30 6 * * 1-5` America/New_York.
-- Manual invocation by Orchestrator via `#dispatch` ("rebuild morning watchlist now").
+- Manual invocation by Orchestrator via `#task-board` ("rebuild morning watchlist now").
 
 ## Inputs
 

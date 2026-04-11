@@ -12,7 +12,7 @@ Structured contrarian review of a specialist thesis. Mandatory before Orchestrat
 - Analyst tags you in `#research` on a decision-grade thesis.
 - Quant tags you in `#quant-signals` on a decision-grade backtest.
 - Scout flags an unusual move on a `#watchlist` name.
-- Orchestrator dispatches a review request in `#dispatch`.
+- Orchestrator dispatches a review request in `#task-board`.
 
 ## Inputs
 

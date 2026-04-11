@@ -121,48 +121,49 @@
       "streaming": "partial",
       "nativeStreaming": true,
       "userTokenReadOnly": true,
+      "$comment_channels": "All channel IDs are resolved from environment variables in ~/.openclaw/.env. See agent-team/config/.env.example for the full list. The keys below use ${VAR} interpolation so the repo ships with zero hardcoded channel IDs.",
       "channels": {
-        "C0APJ5GE8Q2": {
+        "${SLACK_CHANNEL_MARKET_SIGNALS}": {
           "allow": true,
           "requireMention": true,
           "allowBots": true
         },
-        "C0APEJD4JSZ": {
+        "${SLACK_CHANNEL_RESEARCH}": {
           "allow": true,
           "requireMention": true,
           "allowBots": true
         },
-        "C0APBNWUTGB": {
+        "${SLACK_CHANNEL_QUANT_SIGNALS}": {
           "allow": true,
           "requireMention": true,
           "allowBots": true
         },
-        "C0APX22FG9X": {
+        "${SLACK_CHANNEL_CONTRARIAN}": {
           "allow": true,
           "requireMention": true,
           "allowBots": true
         },
-        "C0APBP8JJSX": {
+        "${SLACK_CHANNEL_TASK_BOARD}": {
           "allow": true,
           "requireMention": true,
           "allowBots": true
         },
-        "C0APBP5MS4B": {
+        "${SLACK_CHANNEL_PORTFOLIO_DAILY}": {
           "allow": true,
           "requireMention": true,
           "allowBots": false
         },
-        "C0AQCD7Q1U0": {
+        "${SLACK_CHANNEL_PORTFOLIO_WEEKLY}": {
           "allow": true,
           "requireMention": true,
           "allowBots": false
         },
-        "C0AP4KWHXQF": {
+        "${SLACK_CHANNEL_THEMES}": {
           "allow": true,
           "requireMention": true,
           "allowBots": true
         },
-        "C0APH5991U2": {
+        "${SLACK_CHANNEL_AGENTS}": {
           "allow": true,
           "requireMention": true,
           "allowBots": true

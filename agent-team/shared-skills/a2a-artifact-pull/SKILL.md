@@ -35,7 +35,7 @@ This rule is reproduced in every `AGENTS.md` and in `team-memory.md`.
 ## Forbidden uses
 
 - **Never** use A2A to ask a question. Questions go in Slack channels with explicit `@` mentions.
-- **Never** use A2A to dispatch work. Dispatch goes in `#dispatch` via `explicit_dispatch`.
+- **Never** use A2A to dispatch work. Dispatch goes in `#task-board` via `explicit_dispatch`.
 - **Never** use A2A to share an opinion, a thesis, or a review. Those go in the owning channel.
 - **Never** use A2A to pull a file that has not been referenced by a Slack pointer. Undocumented pulls are invisible to the team and break the audit trail.
 

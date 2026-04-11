@@ -43,7 +43,7 @@ The deploy script places these into `~/.openclaw`:
 
 | Channel | Post | Env var |
 |---|---|---|
-| `#dispatch` | Orchestrator | `SLACK_CHANNEL_DISPATCH` |
+| `#task-board` | Orchestrator | `SLACK_CHANNEL_TASK_BOARD` |
 | `#market-signals` | Scout | `SLACK_CHANNEL_MARKET_SIGNALS` |
 | `#research` | Analyst | `SLACK_CHANNEL_RESEARCH` |
 | `#quant-signals` | Quant | `SLACK_CHANNEL_QUANT_SIGNALS` |

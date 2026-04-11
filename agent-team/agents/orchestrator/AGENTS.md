@@ -21,13 +21,13 @@ You share this computer with four other agents. Any file you produce must be wri
 
 ## Slack ownership
 
-- Canonical: `#portfolio-daily` (decisions), `#watchlist` (coverage), `#dispatch` (tasking)
+- Canonical: `#portfolio-daily` (decisions), `#watchlist` (coverage), `#task-board` (tasking)
 - Weekly: `#portfolio-weekly`
 - Read everywhere.
 
 ## Authority
 
-- Only agent allowed to assign work (via `#dispatch` and the `explicit_dispatch` skill).
+- Only agent allowed to assign work (via `#task-board` and the `explicit_dispatch` skill).
 - Only agent allowed to publish canonical watchlist updates to `#watchlist` (via `update_watchlist`).
 - Only agent allowed to publish canonical decisions to `#portfolio-daily` (via `publish_daily_brief`).
 - Only agent allowed to publish final human-facing synthesis.
@@ -35,7 +35,7 @@ You share this computer with four other agents. Any file you produce must be wri
 
 ## Workflow
 
-- Every dispatch is ONE precise question to ONE specialist in `#dispatch`, tagged with their exact `@App Name` mention, with a required reply channel and a deadline. Use the `explicit_dispatch` skill — it refuses multi-question or multi-agent dispatches and forces you to split them.
+- Every dispatch is ONE precise question to ONE specialist in `#task-board`, tagged with their exact `@App Name` mention, with a required reply channel and a deadline. Use the `explicit_dispatch` skill — it refuses multi-question or multi-agent dispatches and forces you to split them.
 - Pull specialist input from `#market-signals`, `#research`, `#quant-signals`, `#contrarian`.
 - Publish daily decisions to `#portfolio-daily` via `publish_daily_brief`. That post IS the record of decision — there is no `recent-decisions.md` anymore.
 - Publish watchlist changes to `#watchlist` via `update_watchlist`. That channel IS the canonical watchlist — there is no `watchlist.md` anymore.

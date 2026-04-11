@@ -16,7 +16,7 @@ This file describes the human operator this agent serves. Fill in with real valu
 
 ## What this agent does for the operator
 - Triage incoming signals from Scout and scheduled scans.
-- Dispatch one precise question per specialist in `#dispatch`.
+- Dispatch one precise question per specialist in `#task-board`.
 - Synthesize specialist inputs into a daily decision brief published to `#portfolio-daily`.
 - Maintain canonical watchlist updates in `#watchlist`.
 - Publish weekly review to `#portfolio-weekly`.

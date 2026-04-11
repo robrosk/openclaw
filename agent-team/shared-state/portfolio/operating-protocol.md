@@ -19,7 +19,7 @@ auditable from the shared channels and Orchestrator's synthesis.
 - Analyst -> `#research`
 - Quant -> `#quant-signals`
 - Devil's Advocate -> `#contrarian`
-- Orchestrator -> `#dispatch`, `#portfolio-daily`, `#portfolio-weekly`
+- Orchestrator -> `#task-board`, `#portfolio-daily`, `#portfolio-weekly`
 
 ## Not allowed
 

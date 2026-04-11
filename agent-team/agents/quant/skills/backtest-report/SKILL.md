@@ -21,7 +21,7 @@ Orchestrator dispatched a backtest request, or a thesis from `#research` needs h
 
 ## Steps
 
-1. Restate the strategy rules unambiguously. If any rule is ambiguous, stop and ask in `#dispatch` via `@Orchestrator - Portfolio Manager`. Do not guess.
+1. Restate the strategy rules unambiguously. If any rule is ambiguous, stop and ask in `#task-board` via `@Orchestrator - Portfolio Manager`. Do not guess.
 2. Load data from the declared source. If the feed is unavailable, report the failure in `#quant-signals` and stop — never fabricate.
 3. Compute in-sample and out-of-sample runs separately. Record: Sharpe, max drawdown, win rate, max consecutive losses, CAGR, turnover, cost assumptions.
 4. Save the full artifact as `files/YYYY-MM-DD/quant-backtest-<slug>.json` via `file_layout_discipline`. Include raw equity curve, per-trade log, parameters, data hash, and caveats in the JSON.
