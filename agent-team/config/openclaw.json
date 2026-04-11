@@ -259,13 +259,5 @@
       "agentId": "devils-advocate",
       "match": { "channel": "slack", "accountId": "devils-advocate" }
     }
-  ],
-  "plugins": {
-    "entries": {
-      "duckduckgo": {
-        "enabled": true,
-        "config": {}
-      }
-    }
-  }
+  ]
 }
