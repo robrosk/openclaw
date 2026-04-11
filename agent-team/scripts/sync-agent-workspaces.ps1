@@ -137,6 +137,22 @@ This index is the agent's own history of what it produced and when. Scan the tai
 
 $teamRoot = Get-TeamRoot
 $repoRoot = Get-RepoRoot
+
+# Source-checkout preflight: warn the operator that any subsequent
+# `openclaw channels status --probe` invocation must NOT inherit a cwd inside
+# this repo. The OpenClaw bundled-plugin resolver walks process.cwd() looking
+# for a package root; inside a source checkout it picks <repo>/extensions and
+# fails with "plugin manifest not found: <repo>/extensions/openclaw.plugin.json".
+# Stripping OPENCLAW_BUNDLED_PLUGINS_DIR / OPENCLAW_PLUGINS and running the
+# probe from $HOME avoids the trap.
+if ((Test-Path -LiteralPath (Join-Path $repoRoot ".git")) -and
+    (Test-Path -LiteralPath (Join-Path $repoRoot "src")) -and
+    (Test-Path -LiteralPath (Join-Path $repoRoot "extensions"))) {
+  Write-Host "Source checkout detected at: $repoRoot"
+  Write-Host "Run any 'openclaw channels status --probe' from `$HOME with bundled-plugin env vars stripped."
+  Write-Host ""
+}
+
 $agentsRoot = Join-Path $teamRoot "agents"
 $sharedSkillsRoot = Join-Path $teamRoot "shared-skills"
 $sharedStateRoot = Join-Path $teamRoot "shared-state"
@@ -279,3 +295,19 @@ if ($IncludeConfig) {
 if (-not $canApplyIdentity) {
   Write-Host "Skipped live identity update because openclaw CLI or $openClawConfigPath was not found."
 }
+
+Write-Host ""
+Write-Host "Verify from a clean shell (do NOT run with `$PWD inside $repoRoot):"
+Write-Host ""
+Write-Host "  Push-Location `$HOME"
+Write-Host "  Remove-Item Env:OPENCLAW_BUNDLED_PLUGINS_DIR -ErrorAction SilentlyContinue"
+Write-Host "  Remove-Item Env:OPENCLAW_PLUGINS              -ErrorAction SilentlyContinue"
+Write-Host "  Remove-Item Env:OPENCLAW_STATE_DIR            -ErrorAction SilentlyContinue"
+Write-Host "  Remove-Item Env:OPENCLAW_CONFIG_PATH          -ErrorAction SilentlyContinue"
+Write-Host "  openclaw channels status --probe"
+Write-Host "  Pop-Location"
+Write-Host ""
+Write-Host "If 'openclaw channels status --probe' is run from inside the source checkout,"
+Write-Host "the CLI re-triggers the bundled-plugin cwd trap and prints"
+Write-Host "'plugin manifest not found: $repoRoot\extensions\openclaw.plugin.json'."
+Write-Host "That is an environment leak, NOT a malformed openclaw.json."

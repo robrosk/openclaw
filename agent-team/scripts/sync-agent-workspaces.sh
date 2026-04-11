@@ -50,6 +50,15 @@ echo "Target root: $OPENCLAW_ROOT"
 echo "Clean mode:  $CLEAN"
 echo ""
 
+# Source-checkout preflight: warn the operator that the gateway and any
+# subsequent CLI invocation must NOT inherit a cwd inside this repo. See the
+# launch block at the bottom of this script for the rationale.
+if [ -d "$REPO_ROOT/.git" ] && [ -d "$REPO_ROOT/src" ] && [ -d "$REPO_ROOT/extensions" ]; then
+  echo "Source checkout detected at: $REPO_ROOT"
+  echo "Gateway will be launched from \$HOME with bundled-plugin env vars stripped."
+  echo ""
+fi
+
 mkdir -p "$OPENCLAW_ROOT"
 
 # --- Clean mode: wipe workspaces + shared skills, preserve .env + openclaw.json ---
@@ -125,14 +134,32 @@ echo "Synced shared skills."
 # globally-installed npm package's dist tree. That mismatch surfaces as
 # "plugin manifest not found: <repo>/extensions/openclaw.plugin.json" on
 # every boot. Launching from $HOME (which is not a checkout) and stripping
-# any stale OPENCLAW_* env overrides keeps the resolver pointed at the
-# globally-installed openclaw package.
+# any stale OPENCLAW_* env overrides (including OPENCLAW_PLUGINS, which can
+# inject the source extensions/ tree as a load path) keeps the resolver
+# pointed at the globally-installed openclaw package.
 pkill -9 -f openclaw-gateway || true
 sleep 1
 ( cd "$HOME" && \
-  env -u OPENCLAW_BUNDLED_PLUGINS_DIR -u OPENCLAW_STATE_DIR -u OPENCLAW_CONFIG_PATH \
+  env -u OPENCLAW_BUNDLED_PLUGINS_DIR \
+      -u OPENCLAW_PLUGINS \
+      -u OPENCLAW_STATE_DIR \
+      -u OPENCLAW_CONFIG_PATH \
     nohup openclaw gateway run --bind loopback --port 18789 --force \
     > /tmp/openclaw-gateway.log 2>&1 & )
 echo "Gateway restarted from \$HOME. Logs at /tmp/openclaw-gateway.log"
 echo ""
-echo "Verify with: openclaw channels status --probe"
+cat <<BANNER
+Verify from a clean shell (do NOT run with \$PWD inside $REPO_ROOT):
+
+  ( cd "\$HOME" && \\
+      env -u OPENCLAW_BUNDLED_PLUGINS_DIR \\
+          -u OPENCLAW_PLUGINS \\
+          -u OPENCLAW_STATE_DIR \\
+          -u OPENCLAW_CONFIG_PATH \\
+        openclaw channels status --probe )
+
+If \`openclaw channels status --probe\` is run from inside the source
+checkout, the CLI process re-triggers the same cwd trap as the gateway and
+prints "plugin manifest not found: $REPO_ROOT/extensions/openclaw.plugin.json".
+That is an environment leak, NOT a malformed openclaw.json.
+BANNER

@@ -196,7 +196,20 @@ git pull
 
 `--clean` never touches `~/.openclaw/.env`. It does rewrite `~/.openclaw/openclaw.json` from the source config each run.
 
-The gateway is always relaunched from `$HOME` with `OPENCLAW_BUNDLED_PLUGINS_DIR`, `OPENCLAW_STATE_DIR`, and `OPENCLAW_CONFIG_PATH` stripped from the environment. This is intentional: OpenClaw's bundled-plugins resolver walks `process.cwd()` looking for an OpenClaw package root, and if the gateway boots with cwd inside a clone of the openclaw source repo (e.g. `/home/clawadmin/openclaw/`), the resolver mistakes that clone for the package root and points the bundled-plugins tree at `<repo>/extensions/` instead of the globally-installed npm package's `dist/extensions`. That mismatch surfaces on every boot as `plugin manifest not found: <repo>/extensions/openclaw.plugin.json`. Launching from `$HOME` (which is not a checkout) avoids the trap. You can run the sync script itself from anywhere — only the gateway subprocess needs the safe cwd.
+The gateway is always relaunched from `$HOME` with `OPENCLAW_BUNDLED_PLUGINS_DIR`, `OPENCLAW_PLUGINS`, `OPENCLAW_STATE_DIR`, and `OPENCLAW_CONFIG_PATH` stripped from the environment. This is intentional: OpenClaw's bundled-plugins resolver walks `process.cwd()` looking for an OpenClaw package root, and if the gateway boots with cwd inside a clone of the openclaw source repo (e.g. `/home/clawadmin/openclaw/`), the resolver mistakes that clone for the package root and points the bundled-plugins tree at `<repo>/extensions/` instead of the globally-installed npm package's `dist/extensions`. That mismatch surfaces on every boot as `plugin manifest not found: <repo>/extensions/openclaw.plugin.json`. Launching from `$HOME` (which is not a checkout) avoids the trap. You can run the sync script itself from anywhere — only the gateway subprocess needs the safe cwd.
+
+The same trap applies to **`openclaw channels status --probe`** and any other CLI invocation: the CLI process walks its own `cwd`, so running the probe from `/home/clawadmin/openclaw` will reproduce the exact same `plugin manifest not found: <repo>/extensions/openclaw.plugin.json` error even though the gateway itself is fine. **`openclaw.json` is not malformed when this happens — it is an environment leak.** Always run the probe from `$HOME` with the same env vars stripped:
+
+```bash
+( cd "$HOME" && \
+    env -u OPENCLAW_BUNDLED_PLUGINS_DIR \
+        -u OPENCLAW_PLUGINS \
+        -u OPENCLAW_STATE_DIR \
+        -u OPENCLAW_CONFIG_PATH \
+      openclaw channels status --probe )
+```
+
+The sync script prints this exact command at the end of each run as a reminder.
 
 ## Architecture notes
 
