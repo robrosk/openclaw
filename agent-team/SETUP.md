@@ -64,10 +64,11 @@ All secrets and **all** Slack channel IDs are referenced in `openclaw.json` via 
 
 ### Migration from pre-TASK_BOARD deploys
 
-If you previously deployed with an older version of this config, two things have changed and your `~/.openclaw/.env` needs updating:
+If you previously deployed with an older version of this config, three things have changed and your `~/.openclaw/.env` needs updating:
 
 1. **`SLACK_CHANNEL_DISPATCH` → `SLACK_CHANNEL_TASK_BOARD`.** The former `#dispatch` channel is now `#task-board`. Rename the variable in your `.env` (value stays the same channel ID, unless you also rename the channel in Slack).
 2. **All channel IDs must now live in `.env`.** Earlier versions had 9 channel IDs hardcoded in `openclaw.json` and only `WATCHLIST` / `WEEKLY_OUTLOOK` in `.env`. Every `SLACK_CHANNEL_*` var must now be filled in or the gateway will refuse to bind those channels. Copy the IDs from your old `openclaw.json` into `~/.openclaw/.env` before restarting.
+3. **`OPERATOR_EMAIL` replaces the hardcoded email in `openclaw.json`.** The `auth.profiles` block now resolves both the profile key (`openai-codex:${OPERATOR_EMAIL}`) and the `email` field from this env var. Add `OPERATOR_EMAIL=` to `~/.openclaw/.env` with the email address you used to sign in to your model provider's OAuth flow. Must match exactly or the profile lookup will fail.
 
 ## Prerequisites
 
@@ -95,6 +96,8 @@ cp agent-team/config/.env.example agent-team/config/.env
 Edit `agent-team/config/.env` and fill in every value — 5 bot+app token pairs, the gateway token, and all 11 channel IDs:
 
 ```
+OPERATOR_EMAIL=you@example.com
+
 OPENCLAW_GATEWAY_TOKEN=<openssl rand -hex 24>
 
 SLACK_ORCHESTRATOR_BOT_TOKEN=xoxb-...
