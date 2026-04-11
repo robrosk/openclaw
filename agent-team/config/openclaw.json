@@ -116,10 +116,8 @@
         "memberInfo": true,
         "emojiList": true
       },
-      "streaming": {
-        "mode": "partial",
-        "nativeTransport": true
-      },
+      "streaming": "partial",
+      "nativeStreaming": true,
       "userTokenReadOnly": true,
       "channels": {
         "${SLACK_CHANNEL_MARKET_SIGNALS}": {
