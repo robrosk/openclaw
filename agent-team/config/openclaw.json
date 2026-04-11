@@ -67,8 +67,7 @@
   "tools": {
     "profile": "full",
     "agentToAgent": {
-      "enabled": true,
-      "$comment": "A2A is enabled ONLY for pulling finished artifacts from another agent's files/ folder. Never use A2A for tasking, discussion, or coordination - those stay in Slack. See shared-skills/a2a-artifact-pull/SKILL.md."
+      "enabled": true
     },
     "web": {
       "search": {
@@ -121,7 +120,6 @@
       "streaming": "partial",
       "nativeStreaming": true,
       "userTokenReadOnly": true,
-      "$comment_channels": "All channel IDs are resolved from environment variables in ~/.openclaw/.env. See agent-team/config/.env.example for the full list. The keys below use ${VAR} interpolation so the repo ships with zero hardcoded channel IDs.",
       "channels": {
         "${SLACK_CHANNEL_MARKET_SIGNALS}": {
           "allow": true,
