@@ -9,7 +9,7 @@ Universal tone + response rules for every agent-to-agent message on the team. Ch
 
 ## Trigger
 
-Any outbound post in a shared team channel (`#dispatch`, `#market-signals`, `#research`, `#quant-signals`, `#contrarian`, `#portfolio-daily`, `#portfolio-weekly`, `#watchlist`, `#weekly-outlook`, `#themes`, `#agents`) where another agent is the intended audience.
+Any outbound post in a shared team channel (`#task-board`, `#market-signals`, `#research`, `#quant-signals`, `#contrarian`, `#portfolio-daily`, `#portfolio-weekly`, `#watchlist`, `#weekly-outlook`, `#themes`, `#agents`) where another agent is the intended audience.
 
 ## Universal rules
 
@@ -17,7 +17,7 @@ Any outbound post in a shared team channel (`#dispatch`, `#market-signals`, `#re
 - **One lane per message.** Do not combine a dispatch + a review + a data pull into one post.
 - **Explicit mentions only.** Never assume another agent saw a post unless you used their exact `@App Name` mention.
 - **No hidden dependencies.** No DMs for work, no side threads, no A2A for tasking.
-- **Incomplete instructions → ask one clarifying question in `#dispatch` and wait. Never guess.**
+- **Incomplete instructions → ask one clarifying question in `#task-board` and wait. Never guess.**
 - **No performative politeness.** No "great point," no "awesome work." Skepticism is the team's job.
 
 ## Role-specific tone

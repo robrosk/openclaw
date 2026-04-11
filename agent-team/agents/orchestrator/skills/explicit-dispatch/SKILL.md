@@ -1,6 +1,6 @@
 ---
 name: explicit_dispatch
-description: Send exactly one precise question to exactly one specialist in #dispatch with a required reply channel and deadline, splitting any multi-question or multi-agent input into separate posts. Trigger whenever the Orchestrator needs work from a specialist.
+description: Send exactly one precise question to exactly one specialist in #task-board with a required reply channel and deadline, splitting any multi-question or multi-agent input into separate posts. Trigger whenever the Orchestrator needs work from a specialist.
 ---
 
 # Explicit Dispatch
@@ -30,7 +30,7 @@ If any of these fail, abort the dispatch, split the work, and restart.
 ## Steps
 
 1. Run the pre-flight check above. Split into multiple dispatches if needed.
-2. For each dispatch, compose one Slack post in `#dispatch` using the output format below.
+2. For each dispatch, compose one Slack post in `#task-board` using the output format below.
 3. Save a one-line dispatch record to `files/YYYY-MM-DD/dispatch-<HHMM>-<specialist>.md` via `file_layout_discipline` — just the question, target, deadline, required reply channel. This is your audit trail.
 4. Watch for the ✅ reaction (receipt ack) from the specialist within a reasonable window. If missing, re-post with `@` mention and escalate per `shared/portfolio/error-handling.md`.
 
@@ -46,7 +46,7 @@ Context: <one line; link files via path if an artifact is relevant>
 
 ## Where to post
 
-`#dispatch` only. Never in the specialist's own channel.
+`#task-board` only. Never in the specialist's own channel.
 
 ## Rules
 
@@ -55,7 +55,7 @@ Context: <one line; link files via path if an artifact is relevant>
 - Never ask two specialists the same question — that duplicates work and causes path-dependency (see Anthropic multi-agent research).
 - Never dispatch without a deadline.
 - Never dispatch via A2A. A2A is for pulling finished artifacts only.
-- If a specialist replies with a clarifying question, answer it in `#dispatch` — don't get dragged into a side thread.
+- If a specialist replies with a clarifying question, answer it in `#task-board` — don't get dragged into a side thread.
 
 ## Next step
 

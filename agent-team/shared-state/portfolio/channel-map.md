@@ -6,7 +6,7 @@
 | `#research` | Analyst | all | Source-backed fundamental theses |
 | `#quant-signals` | Quant | all | Computed technical signals, backtest pointers |
 | `#contrarian` | Devil's Advocate | all | Stress tests, kill conditions, risk flags |
-| `#dispatch` | Orchestrator | all | One-question-per-agent task assignments |
+| `#task-board` | Orchestrator | all | One-question-per-agent task assignments |
 | `#portfolio-daily` | Orchestrator | all | **Canonical daily decisions + brief (replaces `recent-decisions.md`)** |
 | `#portfolio-weekly` | Orchestrator | all | Weekly synthesis |
 | `#watchlist` | Orchestrator (canonical) + Scout (morning build) | all | **Canonical active coverage list (replaces `watchlist.md`)** |
@@ -22,7 +22,7 @@
 ## Ownership rules
 
 - Specialists post only to their owned channels (plus `#themes` / `#agents` for meta).
-- Only the Orchestrator dispatches work (`#dispatch`) and publishes canonical watchlist + decisions.
+- Only the Orchestrator dispatches work (`#task-board`) and publishes canonical watchlist + decisions.
 - Devil's Advocate reads every channel and may ask follow-up questions directly in the specialist's own channel (see `follow_up_questions` skill).
 - No hidden tasking, no DMs for work, no side threads.
 

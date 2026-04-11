@@ -25,7 +25,7 @@ Fetch and read the contents of a URL. Use after `web_search` to read full articl
 
 Use the `channel-directory` skill to look up channel IDs. The `message` tool requires channel IDs, not names.
 
-- `#dispatch` — task assignments to specialists
+- `#task-board` — task assignments to specialists
 - `#portfolio-daily` — daily human-facing briefs
 - `#portfolio-weekly` — weekly reviews
 - `#agents` — team-wide coordination

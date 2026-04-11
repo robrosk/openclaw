@@ -19,7 +19,7 @@ Compact reference for the investment team design. Read this once; reload on dema
 
 | Channel | Post | Purpose |
 |---|---|---|
-| `#dispatch` | Orchestrator | One-question-per-agent tasking |
+| `#task-board` | Orchestrator | One-question-per-agent tasking |
 | `#market-signals` | Scout | Facts, scans, earnings tracker |
 | `#research` | Analyst | Theses (pointers) |
 | `#quant-signals` | Quant | Technical signals + backtest pointers |
@@ -35,7 +35,7 @@ Compact reference for the investment team design. Read this once; reload on dema
 
 1. Scout posts a trigger (or a scheduled scan fires).
 2. Orchestrator triages.
-3. Orchestrator dispatches ONE precise question to ONE specialist in `#dispatch` with a required reply channel and deadline via `explicit_dispatch`.
+3. Orchestrator dispatches ONE precise question to ONE specialist in `#task-board` with a required reply channel and deadline via `explicit_dispatch`.
 4. Specialist replies in the required channel with an explicit `@Orchestrator - Portfolio Manager` mention via `receive_and_execute_work`.
 5. Devil's Advocate stress-tests if decision-grade, asks follow-up questions in the specialist's own channel if needed, produces a verdict with measurable kill conditions.
 6. Orchestrator publishes the decision brief to `#portfolio-daily` via `publish_daily_brief`. That post IS the record of decision.

@@ -32,7 +32,7 @@ Create or confirm these channel names:
 - `#research`
 - `#quant-signals`
 - `#contrarian`
-- `#dispatch`
+- `#task-board`
 - `#portfolio-daily`
 - `#portfolio-weekly`
 
@@ -46,10 +46,10 @@ practice by Slack membership.
 Recommended channel membership:
 
 - Orchestrator: all seven channels
-- Scout: `#market-signals`, `#dispatch`
-- Analyst: `#research`, `#market-signals`, `#dispatch`
-- Quant: `#quant-signals`, `#research`, `#dispatch`
-- Devil's Advocate: `#contrarian`, `#research`, `#quant-signals`, `#market-signals`, `#dispatch`
+- Scout: `#market-signals`, `#task-board`
+- Analyst: `#research`, `#market-signals`, `#task-board`
+- Quant: `#quant-signals`, `#research`, `#task-board`
+- Devil's Advocate: `#contrarian`, `#research`, `#quant-signals`, `#market-signals`, `#task-board`
 
 ## 4. Fill the real config
 
