@@ -1,13 +1,25 @@
-import type { OpenClawConfig } from "../../config/config.js";
 import type { DmPolicy } from "../../config/types.js";
+import type { OpenClawConfig } from "../../config/types.openclaw.js";
 import type { RuntimeEnv } from "../../runtime.js";
 import type { WizardPrompter } from "../../wizard/prompts.js";
-import type { ChannelId, ChannelPlugin } from "./types.js";
+import type { ChannelAccessPolicy } from "./setup-group-access.js";
+import type { ChannelConfigAdapter, ChannelSetupAdapter } from "./types.adapters.js";
+import type {
+  ChannelCapabilities,
+  ChannelId,
+  ChannelMeta,
+  ChannelSetupInput,
+} from "./types.core.js";
 
-export type ChannelSetupPlugin = Pick<
-  ChannelPlugin,
-  "id" | "meta" | "capabilities" | "config" | "setup" | "setupWizard"
->;
+export type ChannelSetupPlugin = {
+  id: ChannelId;
+  meta: ChannelMeta;
+  capabilities: ChannelCapabilities;
+  config: ChannelConfigAdapter<unknown>;
+  setup?: ChannelSetupAdapter;
+  setupWizard?: ChannelSetupWizard | ChannelSetupWizardAdapter;
+  setupWizard?: ChannelSetupWizard | ChannelSetupWizardAdapter;
+};
 
 export type SetupChannelsOptions = {
   allowDisable?: boolean;
