@@ -116,7 +116,10 @@
         "memberInfo": true,
         "emojiList": true
       },
-      "streaming": "partial",
+      "streaming": {
+        "mode": "partial",
+        "nativeTransport": true
+      },
       "nativeStreaming": true,
       "userTokenReadOnly": true,
       "channels": {
