@@ -113,6 +113,68 @@ describe("resolveConfigEnvVars", () => {
     });
   });
 
+  describe("object keys", () => {
+    it("substitutes env vars in object keys, not just values", () => {
+      const scenarios: SubstitutionScenario[] = [
+        {
+          name: "single env-var key",
+          config: { channels: { "${SLACK_CHANNEL_RESEARCH}": { allow: true } } },
+          env: { SLACK_CHANNEL_RESEARCH: "C0123456789" },
+          expected: { channels: { C0123456789: { allow: true } } },
+        },
+        {
+          name: "multiple env-var keys at the same level",
+          config: {
+            channels: {
+              "${CHAN_A}": { allow: true },
+              "${CHAN_B}": { allow: false },
+            },
+          },
+          env: { CHAN_A: "C_AAA", CHAN_B: "C_BBB" },
+          expected: {
+            channels: {
+              C_AAA: { allow: true },
+              C_BBB: { allow: false },
+            },
+          },
+        },
+        {
+          name: "env-var key with env-var value inside",
+          config: { entries: { "${KEY}": "${VALUE}" } },
+          env: { KEY: "resolved_key", VALUE: "resolved_value" },
+          expected: { entries: { resolved_key: "resolved_value" } },
+        },
+        {
+          name: "literal keys are left untouched",
+          config: { stable: { "${VAR}": 1 }, untouched: { plainKey: 2 } },
+          env: { VAR: "dynamic" },
+          expected: { stable: { dynamic: 1 }, untouched: { plainKey: 2 } },
+        },
+      ];
+
+      expectResolvedScenarios(scenarios);
+    });
+
+    it("throws MissingEnvVarError when an object key references an unset var", () => {
+      expect(() =>
+        resolveConfigEnvVars({ channels: { "${MISSING_CHANNEL}": { allow: true } } }, {}),
+      ).toThrow(MissingEnvVarError);
+    });
+
+    it("preserves the placeholder key when onMissing is provided", () => {
+      const warnings: EnvSubstitutionWarning[] = [];
+      const result = resolveConfigEnvVars(
+        { channels: { "${MISSING_CHANNEL}": { allow: true } } },
+        {},
+        { onMissing: (warning) => warnings.push(warning) },
+      );
+      expect(result).toEqual({
+        channels: { "${MISSING_CHANNEL}": { allow: true } },
+      });
+      expect(warnings).toEqual([{ varName: "MISSING_CHANNEL", configPath: "channels" }]);
+    });
+  });
+
   describe("missing env var handling", () => {
     it("throws MissingEnvVarError with var name and config path details", () => {
       const scenarios: MissingEnvScenario[] = [
