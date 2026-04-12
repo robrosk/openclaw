@@ -264,6 +264,30 @@ foreach ($targetAgent in $targetAgents) {
   }
 }
 
+# --- Distribute auth credentials to all agent dirs ---
+# `openclaw models auth login` writes OAuth credentials (auth-profiles.json) only
+# to the default agent's dir (~/.openclaw/agents/main/agent/). Non-default agents
+# load from their own agentDir and find nothing. Copy the default agent's
+# credentials to all other agent dirs so every agent can authenticate.
+$mainAuth = Get-ChildItem -Path (Join-Path $OpenClawRoot "agents") -Recurse -Filter "auth-profiles.json" -ErrorAction SilentlyContinue |
+  Where-Object { $_.FullName -like "*\main\agent\*" } |
+  Select-Object -First 1
+
+if ($null -ne $mainAuth -and (Test-Path -LiteralPath $mainAuth.FullName)) {
+  $agentDirs = Get-ChildItem -Path (Join-Path $OpenClawRoot "agents") -Directory -ErrorAction SilentlyContinue
+  foreach ($agentSubDir in $agentDirs) {
+    $targetDir = Join-Path $agentSubDir.FullName "agent"
+    $targetFile = Join-Path $targetDir "auth-profiles.json"
+    if ((Test-Path -LiteralPath $targetDir) -and ($targetFile -ne $mainAuth.FullName)) {
+      if ($PSCmdlet.ShouldProcess($targetFile, "Copy auth credentials from main agent")) {
+        Copy-Item -LiteralPath $mainAuth.FullName -Destination $targetFile -Force
+      }
+    }
+  }
+  Write-Host "Auth credentials distributed to all agent dirs."
+  Write-Host ""
+}
+
 if ($IncludeSharedSkills) {
   $destSkillsRoot = Join-Path $OpenClawRoot "skills"
   Sync-DirectoryContent -Source $sharedSkillsRoot -Destination $destSkillsRoot -Mirror:$Prune -WhatIf:$WhatIfPreference
