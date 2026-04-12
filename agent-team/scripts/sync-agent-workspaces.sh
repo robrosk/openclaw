@@ -173,16 +173,16 @@ echo "Synced shared skills."
 
 # --- Distribute auth credentials to all agent dirs ---
 # `openclaw models auth login` writes OAuth credentials (auth-profiles.json)
-# only to the default agent's dir (~/.openclaw/agents/main/agent/). Non-default
-# agents (scout, analyst, quant, devils-advocate) load from their own agentDir
-# and find nothing, causing "Model login failed" on every request. Copy the
-# default agent's credentials to all other agent dirs so every agent can auth.
-MAIN_AUTH="$(find "$OPENCLAW_ROOT/agents" -path '*/main/agent/auth-profiles.json' 2>/dev/null | head -1)"
-if [ -f "$MAIN_AUTH" ]; then
+# only to the default agent's dir (e.g. ~/.openclaw/agents/orchestrator/agent/).
+# Non-default agents load from their own agentDir and find nothing, causing
+# "Model login failed" on every request. Find whichever agent dir has the
+# credentials and copy to all others so every agent can auth.
+SOURCE_AUTH="$(find "$OPENCLAW_ROOT/agents" -name 'auth-profiles.json' -path '*/agent/auth-profiles.json' 2>/dev/null | head -1)"
+if [ -f "$SOURCE_AUTH" ]; then
   for agent_dir in "$OPENCLAW_ROOT/agents"/*/agent/; do
     target="$agent_dir/auth-profiles.json"
-    if [ "$target" != "$MAIN_AUTH" ] && [ -d "$agent_dir" ]; then
-      cp "$MAIN_AUTH" "$target"
+    if [ "$target" != "$SOURCE_AUTH" ] && [ -d "$agent_dir" ]; then
+      cp "$SOURCE_AUTH" "$target"
     fi
   done
   echo "Auth credentials distributed to all agent dirs."
