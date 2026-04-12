@@ -8,6 +8,21 @@
       }
     }
   },
+  "plugins": {
+    "entries": {
+      "openai": {
+        "enabled": true
+      },
+      "google": {
+        "enabled": true,
+        "config": {
+          "webSearch": {
+            "apiKey": "${GEMINI_API_KEY}"
+          }
+        }
+      }
+    }
+  },
   "agents": {
     "defaults": {
       "model": {
@@ -76,7 +91,11 @@
     "web": {
       "search": {
         "enabled": true,
-        "provider": "duckduckgo"
+        "provider": "gemini",
+        "openaiCodex": {
+          "enabled": true,
+          "mode": "live"
+        }
       }
     }
   },
