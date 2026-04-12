@@ -30,7 +30,7 @@ import { resolveGatewayOptions } from "./gateway.js";
 
 const AllMessageActions = CHANNEL_MESSAGE_ACTION_NAMES;
 const MESSAGE_TOOL_THREAD_READ_HINT =
-  ' Use action="read" with threadId to fetch prior messages in a thread when you need conversation context you do not have yet.';
+  ' Use action="read" with channelId to read messages from a specific channel, or with threadId to fetch prior messages in a thread when you need conversation context you do not have yet.';
 const EXPLICIT_TARGET_ACTIONS = new Set<ChannelMessageActionName>([
   "send",
   "sendWithEffect",
@@ -228,7 +228,7 @@ function buildPollSchema() {
 function buildChannelTargetSchema() {
   return {
     channelId: Type.Optional(
-      Type.String({ description: "Channel id filter (search/thread list/event create)." }),
+      Type.String({ description: "Channel id filter (read/search/thread list/event create)." }),
     ),
     chatId: Type.Optional(
       Type.String({ description: "Chat id for chat-scoped metadata actions." }),
