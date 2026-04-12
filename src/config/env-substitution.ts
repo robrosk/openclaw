@@ -175,8 +175,12 @@ function substituteAny(
   if (isPlainObject(value)) {
     const result: Record<string, unknown> = {};
     for (const [key, val] of Object.entries(value)) {
-      const childPath = path ? `${path}.${key}` : key;
-      result[key] = substituteAny(val, env, childPath, opts);
+      // Substitute env vars in object keys as well as values, so config shapes
+      // that key by an env-derived identifier (e.g. `channels.slack.channels`
+      // keyed by Slack channel id) can use `${VAR}` references for the key.
+      const resolvedKey = substituteString(key, env, path, opts);
+      const childPath = path ? `${path}.${resolvedKey}` : resolvedKey;
+      result[resolvedKey] = substituteAny(val, env, childPath, opts);
     }
     return result;
   }
