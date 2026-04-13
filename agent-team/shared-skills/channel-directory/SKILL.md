@@ -43,7 +43,7 @@ message(action: "send", target: "<resolved channel id>", text: "...")
 Read:
 
 ```
-message(action: "read", channel: "<resolved channel id>")
+message(action: "read", target: "<resolved channel id>")
 ```
 
 In your human-readable text always use the `#name` form (e.g. "posting to #task-board"), never the raw ID.
