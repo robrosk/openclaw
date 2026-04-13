@@ -171,6 +171,38 @@ mkdir -p "$OPENCLAW_ROOT/skills"
 cp -r "$SHARED_SKILLS_ROOT"/* "$OPENCLAW_ROOT/skills/"
 echo "Synced shared skills."
 
+# --- Generate resolved channels.json from .env for skill lookup ---
+# The channel-directory skill needs actual Slack channel IDs, not env var
+# references. Read SLACK_CHANNEL_* vars from the deployed .env and emit a
+# JSON file that the model can read at runtime.
+if [ -f "$OPENCLAW_ROOT/.env" ]; then
+  CHANNELS_JSON="$OPENCLAW_ROOT/skills/channel-directory/channels.json"
+  (
+    echo "{"
+    first=1
+    while IFS='=' read -r key value; do
+      case "$key" in
+        SLACK_CHANNEL_*)
+          # Strip surrounding quotes if present
+          value="${value#\"}"
+          value="${value%\"}"
+          value="${value#\'}"
+          value="${value%\'}"
+          if [ -n "$value" ]; then
+            # Convert SLACK_CHANNEL_TASK_BOARD -> #task-board
+            channel_name="$(echo "${key#SLACK_CHANNEL_}" | tr '[:upper:]' '[:lower:]' | tr '_' '-')"
+            [ "$first" -eq 1 ] && first=0 || echo ","
+            printf '  "#%s": "%s"' "$channel_name" "$value"
+          fi
+          ;;
+      esac
+    done < "$OPENCLAW_ROOT/.env"
+    echo ""
+    echo "}"
+  ) > "$CHANNELS_JSON"
+  echo "Generated channels.json from .env ($CHANNELS_JSON)"
+fi
+
 # --- Distribute auth credentials to all agent dirs ---
 # `openclaw models auth login` writes OAuth credentials (auth-profiles.json)
 # only to the default agent's dir (e.g. ~/.openclaw/agents/orchestrator/agent/).
