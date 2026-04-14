@@ -210,25 +210,25 @@
           "name": "Scout - Market Intelligence",
           "botToken": "${SLACK_SCOUT_BOT_TOKEN}",
           "appToken": "${SLACK_SCOUT_APP_TOKEN}",
-          "dmPolicy": "disabled"
+          "dmPolicy": "pairing"
         },
         "analyst": {
           "name": "Analyst - Fundamental Research",
           "botToken": "${SLACK_ANALYST_BOT_TOKEN}",
           "appToken": "${SLACK_ANALYST_APP_TOKEN}",
-          "dmPolicy": "disabled"
+          "dmPolicy": "pairing"
         },
         "quant": {
           "name": "Quant - Technical & Quantitative",
           "botToken": "${SLACK_QUANT_BOT_TOKEN}",
           "appToken": "${SLACK_QUANT_APP_TOKEN}",
-          "dmPolicy": "disabled"
+          "dmPolicy": "pairing"
         },
         "devils-advocate": {
           "name": "Devil's Advocate - Risk & Contrarian",
           "botToken": "${SLACK_DEVILS_ADVOCATE_BOT_TOKEN}",
           "appToken": "${SLACK_DEVILS_ADVOCATE_APP_TOKEN}",
-          "dmPolicy": "disabled"
+          "dmPolicy": "pairing"
         }
       }
     }
