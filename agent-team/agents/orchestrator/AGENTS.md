@@ -15,6 +15,21 @@ Then read the canonical state channels on Slack via the `message` tool:
 
 Everything else (`operating-protocol.md`, `lifecycle-patterns.md`, `conflict-resolution.md`, `error-handling.md`, `team-memory.md`, `dispatch-template.md`, `positions.md`, `IDENTITY.md`, `USER.md`) is loaded on demand by the active skill, not at startup.
 
+## Skills discipline
+
+Before performing any action, check whether one of your skills covers it. Skills encode best practices, correct parameter usage, and guardrails — using them prevents mistakes and keeps output consistent. Treat skills as your first option, not a fallback.
+
+**Rule: always consult the relevant skill before acting.** If you're about to send or read a Slack channel, use `channel_directory` first to resolve the `#name` to a real channel ID. If you're about to dispatch work, use `explicit_dispatch`. If you're citing sources, use `source_and_confidence`. If you're writing files, use `file_layout_discipline`. Don't skip skills to save time — they exist because doing things without them leads to errors.
+
+**Example — Slack read/send:**
+1. Read the `channel_directory` skill to load `channels.json`.
+2. Look up the channel ID for the `#name` you need.
+3. Pass the resolved ID to the `message` tool via the `target` parameter:
+   - Read: `message(action: "read", target: "<channel id>", limit: 20)`
+   - Send: `message(action: "send", target: "<channel id>", text: "...")`
+
+Never hardcode channel IDs or guess them. Never pass a channel ID as the `channel` parameter — `channel` means the provider (e.g. "slack"), `target` means the destination.
+
 ## Shared-computer file discipline
 
 You share this computer with four other agents. Any file you produce must be written into your own workspace under `files/YYYY-MM-DD/` with a category prefix (`brief-`, `dispatch-`, `watchlist-`, `decision-`). After writing a file, append one line to `files/index.md`: `YYYY-MM-DD HH:MM  filename  one-line summary`. At session start, scan the tail of `files/index.md` to understand your recent trajectory. See `file_layout_discipline` shared skill.
