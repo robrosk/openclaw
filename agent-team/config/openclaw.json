@@ -36,6 +36,20 @@
       "memorySearch": {
         "enabled": true,
         "provider": "openai"
+      },
+      "heartbeat": {
+        "every": "1h",
+        "activeHours": {
+          "start": "06:00",
+          "end": "18:00",
+          "timezone": "America/New_York"
+        },
+        "target": "none",
+        "lightContext": true,
+        "isolatedSession": true,
+        "model": "openai-codex/gpt-5.4",
+        "ackMaxChars": 300,
+        "suppressToolErrorWarnings": true
       }
     },
     "list": [
@@ -47,6 +61,9 @@
         "identity": {
           "name": "Orchestrator - Portfolio Manager",
           "emoji": "⚡"
+        },
+        "heartbeat": {
+          "every": "15m"
         }
       },
       {
@@ -55,6 +72,9 @@
         "workspace": "/home/clawadmin/.openclaw/workspace-scout",
         "identity": {
           "name": "Scout - Market Intelligence"
+        },
+        "heartbeat": {
+          "every": "45m"
         }
       },
       {
@@ -63,6 +83,10 @@
         "workspace": "/home/clawadmin/.openclaw/workspace-analyst",
         "identity": {
           "name": "Analyst - Fundamental Research"
+        },
+        "heartbeat": {
+          "every": "2h",
+          "model": "openai-codex/gpt-5.4-mini"
         }
       },
       {
@@ -71,6 +95,10 @@
         "workspace": "/home/clawadmin/.openclaw/workspace-quant",
         "identity": {
           "name": "Quant - Technical & Quantitative"
+        },
+        "heartbeat": {
+          "every": "2h",
+          "model": "openai-codex/gpt-5.4-mini"
         }
       },
       {
@@ -79,6 +107,10 @@
         "workspace": "/home/clawadmin/.openclaw/workspace-devils-advocate",
         "identity": {
           "name": "Devil's Advocate - Risk & Contrarian"
+        },
+        "heartbeat": {
+          "every": "1h",
+          "model": "openai-codex/gpt-5.4-mini"
         }
       }
     ]
@@ -232,6 +264,9 @@
         }
       }
     }
+  },
+  "cron": {
+    "enabled": true
   },
   "gateway": {
     "port": 18789,

@@ -167,16 +167,37 @@ All 5 Slack accounts should show connected, and all 11 channels should be resolv
 - **Quant**: `#quant-signals`, `#research`, `#task-board`, `#watchlist`, `#agents`.
 - **Devil's Advocate**: `#contrarian`, `#research`, `#quant-signals`, `#market-signals`, `#task-board`, `#watchlist`, `#weekly-outlook`, `#agents`.
 
-### 5. Register scheduled jobs
+### 5. Scheduled jobs (automatic)
 
-After deploy, register the scheduled-jobs map (or use the `scheduled-tasks` MCP surface):
+The sync script now **automatically registers** cron jobs from `scheduled-jobs.json` via `openclaw cron add` on each deploy. Jobs that already exist are skipped to avoid duplicates.
+
+Verify registered jobs after deploy:
 
 ```bash
-# The sync script deploys ~/.openclaw/scheduled-jobs.json.
-# Registration depends on your openclaw CLI version; see project docs.
+( cd "$HOME" && \
+    env -u OPENCLAW_BUNDLED_PLUGINS_DIR \
+        -u OPENCLAW_PLUGINS \
+        -u OPENCLAW_STATE_DIR \
+        -u OPENCLAW_CONFIG_PATH \
+      openclaw cron list )
 ```
 
-The scheduled job set fires Scout's morning watchlist, pre-market / mid-day / post-market scans, daily earnings tracker, and Sunday weekly outlook. All cron expressions use America/New_York.
+You should see 6 jobs targeting the Scout agent:
+
+| Job | Cron | Channel |
+|-----|------|---------|
+| `build_morning_watchlist` | `30 6 * * 1-5` | `#watchlist` |
+| `scan_pre_market` | `0 8 * * 1-5` | `#market-signals` |
+| `scan_mid_day` | `0 12 * * 1-5` | `#market-signals` |
+| `scan_post_market` | `30 16 * * 1-5` | `#market-signals` |
+| `earnings_beat_tracker` | `0 17 * * 1-5` | `#market-signals` |
+| `weekly_outlook` | `0 17 * * 0` | `#weekly-outlook` |
+
+All cron expressions use America/New_York. To force-run a job manually:
+
+```bash
+openclaw cron run <job-id>
+```
 
 ### 6. Test
 

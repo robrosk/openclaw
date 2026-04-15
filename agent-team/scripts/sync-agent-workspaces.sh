@@ -249,6 +249,89 @@ sleep 1
     > /tmp/openclaw-gateway.log 2>&1 & )
 echo "Gateway restarted from \$HOME. Logs at /tmp/openclaw-gateway.log"
 echo ""
+
+# --- Register cron jobs from scheduled-jobs.json ---
+# The gateway needs ~3s to start accepting cron commands.
+# scheduled-jobs.json is a reference file — the gateway does NOT auto-load it.
+# Jobs must be registered via `openclaw cron add`. This section reads the .env
+# for channel IDs and registers each job, skipping any that already exist.
+if [ -f "$CONFIG_ROOT/scheduled-jobs.json" ] && [ -f "$OPENCLAW_ROOT/.env" ]; then
+  echo "Waiting for gateway to start before registering cron jobs..."
+  sleep 4
+
+  # Helper: run openclaw CLI from $HOME with bundled-plugin env stripped
+  run_oc() {
+    ( cd "$HOME" && \
+      env -u OPENCLAW_BUNDLED_PLUGINS_DIR \
+          -u OPENCLAW_PLUGINS \
+          -u OPENCLAW_STATE_DIR \
+          -u OPENCLAW_CONFIG_PATH \
+        "$OPENCLAW_BIN" "$@" 2>/dev/null )
+  }
+
+  # Source channel IDs from .env
+  eval "$(grep '^SLACK_CHANNEL_' "$OPENCLAW_ROOT/.env" | sed 's/^/export /')"
+
+  # Get existing job names to avoid duplicates
+  EXISTING_JOBS="$(run_oc cron list --json 2>/dev/null || echo '[]')"
+
+  register_cron_job() {
+    local name="$1" cron_expr="$2" agent="$3" skill="$4" channel_id="$5" description="$6"
+
+    # Skip if job already exists (match by name)
+    if echo "$EXISTING_JOBS" | grep -q "\"name\":\"$name\"" 2>/dev/null || \
+       echo "$EXISTING_JOBS" | grep -q "\"name\": \"$name\"" 2>/dev/null; then
+      echo "  Cron job '$name' already exists, skipping."
+      return 0
+    fi
+
+    local to_flag=""
+    if [ -n "$channel_id" ]; then
+      to_flag="--announce --channel slack --to channel:$channel_id"
+    fi
+
+    run_oc cron add \
+      --name "$name" \
+      --cron "$cron_expr" \
+      --tz "America/New_York" \
+      --agent "$agent" \
+      --session isolated \
+      --message "Execute the $skill skill. Read skills/${skill//_/-}/SKILL.md and follow it exactly. Post results to the designated channel as described in the skill." \
+      $to_flag \
+      && echo "  Registered cron job: $name" \
+      || echo "  WARNING: Failed to register cron job: $name"
+  }
+
+  echo "Registering cron jobs from scheduled-jobs.json..."
+
+  register_cron_job \
+    "build_morning_watchlist" "30 6 * * 1-5" "scout" "build_morning_watchlist" \
+    "$SLACK_CHANNEL_WATCHLIST" "Pre-market watchlist rebuild"
+
+  register_cron_job \
+    "scan_pre_market" "0 8 * * 1-5" "scout" "scan_pre_market" \
+    "$SLACK_CHANNEL_MARKET_SIGNALS" "Pre-market window scan"
+
+  register_cron_job \
+    "scan_mid_day" "0 12 * * 1-5" "scout" "scan_mid_day" \
+    "$SLACK_CHANNEL_MARKET_SIGNALS" "Mid-day window scan"
+
+  register_cron_job \
+    "scan_post_market" "30 16 * * 1-5" "scout" "scan_post_market" \
+    "$SLACK_CHANNEL_MARKET_SIGNALS" "Post-market window scan"
+
+  register_cron_job \
+    "earnings_beat_tracker" "0 17 * * 1-5" "scout" "earnings_beat_tracker" \
+    "$SLACK_CHANNEL_MARKET_SIGNALS" "Daily earnings roundup"
+
+  register_cron_job \
+    "weekly_outlook" "0 17 * * 0" "scout" "weekly_outlook" \
+    "$SLACK_CHANNEL_WEEKLY_OUTLOOK" "Sunday weekly wrap"
+
+  echo "Cron registration complete."
+  echo ""
+fi
+
 cat <<BANNER
 Verify from a clean shell (do NOT run with \$PWD inside $REPO_ROOT):
 
@@ -258,6 +341,13 @@ Verify from a clean shell (do NOT run with \$PWD inside $REPO_ROOT):
           -u OPENCLAW_STATE_DIR \\
           -u OPENCLAW_CONFIG_PATH \\
         openclaw channels status --probe )
+
+  ( cd "\$HOME" && \\
+      env -u OPENCLAW_BUNDLED_PLUGINS_DIR \\
+          -u OPENCLAW_PLUGINS \\
+          -u OPENCLAW_STATE_DIR \\
+          -u OPENCLAW_CONFIG_PATH \\
+        openclaw cron list )
 
 If \`openclaw channels status --probe\` is run from inside the source
 checkout, the CLI process re-triggers the same cwd trap as the gateway and
